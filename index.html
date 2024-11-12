@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat en Tiempo Real</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2f;
+      color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 20px 0;
+      color: #ff6f61;
+    }
+
+    #chat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      max-width: 600px;
+      margin: 10px auto;
+      text-align: left;
+      background-color: #29293d;
+      border-radius: 5px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    input {
+      width: 70%;
+      background-color: #3e3e5e;
+      color: #f4f4f4;
+    }
+
+    button {
+      background-color: #ff6f61;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff4f41;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Chat en Tiempo Real</h1>
+  <div id="chat">
+    <ul id="mensajes"></ul>
+    <input id="msg" autocomplete="off" placeholder="Escribe un mensaje..." />
+    <button onclick="enviar()">Enviar</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('mensaje', function(msg) {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      document.getElementById('mensajes').appendChild(item);
+      document.getElementById('mensajes').scrollTop = document.getElementById('mensajes').scrollHeight;
+    });
+
+    function enviar() {
+      const input = document.getElementById('msg');
+      if (input.value.trim() !== "") {
+        socket.emit('mensaje', input.value);
+        input.value = '';
+      }
+    }
+  </script>
+</body>
+</html>
